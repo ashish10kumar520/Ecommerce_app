@@ -10,6 +10,7 @@ import Layout from "./Layout.jsx";
 import Home from "./Screens/Home.jsx";
 import { AuthProvider } from "./config/authContext.jsx";
 import Profile from "./Screens/profile/ProfilePage.jsx";
+import "./App.css";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
