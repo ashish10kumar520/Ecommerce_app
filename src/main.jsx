@@ -7,6 +7,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Layout from "./Layout.jsx";
+import { SnackbarProvider } from "notistack";
 import Home from "./Screens/Home.jsx";
 import { AuthProvider } from "./config/authContext.jsx";
 import Profile from "./Screens/profile/ProfilePage.jsx";
@@ -23,6 +24,12 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
-    <RouterProvider router={router} />
+    <SnackbarProvider
+      maxSnack={3}
+      autoHideDuration={3000}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+    >
+      <RouterProvider router={router} />
+    </SnackbarProvider>
   </AuthProvider>,
 );

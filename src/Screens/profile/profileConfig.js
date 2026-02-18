@@ -1,7 +1,7 @@
 import ProfileForm from "./forms/ProfileForm";
 import AdressForm from "./forms/AdressForm";
 import MyOrders from "./forms/MyOrders";
-import GiftCards from "./forms/GiftCards";
+import WishList from "./forms/WishList";
 import SavedCards from "./forms/SavedCards";
 import SavedUpi from "./forms/SavedUpi";
 
@@ -35,9 +35,9 @@ export const profileConfig = [
     section: "Payments",
     items: [
       {
-        key: "giftcards",
-        label: "Gift Cards",
-        component: GiftCards,
+        key: "wishlist",
+        label: "WishList",
+        component: WishList,
       },
       {
         key: "savedcards",
