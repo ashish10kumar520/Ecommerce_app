@@ -49,10 +49,47 @@ export async function postApi(
       callBack(response);
     })
     .catch((error) => {
+      setLoader(false);
+      const message =
+        error?.response?.data?.message || "Something went wrong";
       enqueueSnackbar &&
-        enqueueSnackbar("Error : Something went wrong", {
+        enqueueSnackbar(message, {
           variant: "error",
           autoHideDuration: 5000,
         });
     });
+}
+
+export async function deleteApi(
+  key,
+  setLoader = (a) => a,
+  callBack = () => {},
+  enqueueSnackbar = (a, b) => a,
+) {
+  if (!key) return;
+  setLoader(true);
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/${key}`, {
+      headers: {
+        Authorization: `Bearer ${keycloak?.token}`,
+      },
+    });
+    setLoader(false);
+    const { message = "Successful" } = response.data || {};
+    enqueueSnackbar &&
+      enqueueSnackbar(message, {
+        variant: "success",
+        autoHideDuration: 5000,
+      });
+    callBack(response);
+  } catch (error) {
+    setLoader(false);
+    const message =
+      error?.response?.data?.message || "Something went wrong";
+    enqueueSnackbar &&
+      enqueueSnackbar(message, {
+        variant: "error",
+        autoHideDuration: 5000,
+      });
+  }
 }

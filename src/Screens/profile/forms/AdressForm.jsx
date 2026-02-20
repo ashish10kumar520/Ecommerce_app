@@ -6,7 +6,6 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import SchemaForm from "../../../commons/SchemaForm";
 import { INDIAN_STATES } from "../../../constants/constants";
-import { PINCODE_URL } from "../../../config/config";
 import axios from "axios";
 import debounce from "lodash/debounce";
 import { getApi, postApi } from "../../../config/api";
@@ -16,11 +15,11 @@ import { useSnackbar } from "notistack";
 const emptyAddress = {
   name: "",
   phoneNo: "",
-  addressLine1: "",
-  landmark: "",
+  address: "",
+  landMark: "",
   city: "",
   state: "",
-  pincode: "",
+  pinCode: "",
   addressType: "home",
 };
 
@@ -50,12 +49,14 @@ const AddressForm = () => {
 
   const handleEdit = (address) => {
     setFormValues(address);
-    setEditId(address.id);
+    setEditId(address?.addressId);
     setIsEdit(true);
     setOpen(true);
   };
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [addressToArchive, setAddressToArchive] = useState(null);
 
   const openMenu = Boolean(anchorEl);
 
@@ -75,21 +76,59 @@ const AddressForm = () => {
     await formRef.current.handleSubmit();
     const data = formRef.current.values;
     if (!data) return;
+    console.log("editId >>>", editId);
+    if (isEdit) {
+      postApi(
+        `updateAddress/${editId}`,
+        data,
+        setLoader,
+        () => {
+          fetchUserAddress();
+          handleClose();
+        },
+        (message = "", info = {}) => {
+          enqueueSnackbar(message, info);
+        },
+      );
+    } else {
+      postApi(
+        "address",
+        data,
+        setLoader,
+        () => {
+          fetchUserAddress();
+          handleClose();
+        },
+        (message = "", info = {}) => {
+          enqueueSnackbar(message, info);
+        },
+      );
+    }
+  };
 
+  const handleDeleteClick = (address) => {
+    if (!address) return;
+    setAddressToArchive(address);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirmClose = () => {
+    setDeleteConfirmOpen(false);
+    setAddressToArchive(null);
+  };
+
+  const handleDelete = () => {
+    if (!addressToArchive) return;
+    const id = addressToArchive?.addressId ?? addressToArchive?.id;
+    const payload = { ...addressToArchive };
+    handleDeleteConfirmClose();
     postApi(
-      "address",
-      data,
+      `deleteAddress/${id}`,
+      payload,
       setLoader,
-      () => {
-        setOpen(false);
-        fetchUserAddress();
-      },
-      (message = "", info = {}) => {
-        enqueueSnackbar(message, info);
-      },
+      () => fetchUserAddress(),
+      (message = "", info = {}) => enqueueSnackbar(message, info),
     );
-
-    handleClose();
   };
 
   const fetchUserAddress = async () => {
@@ -192,13 +231,29 @@ const AddressForm = () => {
 
         <MenuItem
           onClick={() => {
-            handleDelete(selectedAddress?.id);
+            handleDeleteClick(selectedAddress);
             handleMenuClose();
           }}
         >
           Delete
         </MenuItem>
       </Menu>
+
+      <CommonDialog
+        open={deleteConfirmOpen}
+        onClose={handleDeleteConfirmClose}
+        title="Delete Address"
+        actions={
+          <>
+            <Button onClick={handleDeleteConfirmClose}>Cancel</Button>
+            <Button variant="contained" color="error" onClick={handleDelete}>
+              OK
+            </Button>
+          </>
+        }
+      >
+        <Typography>Are you sure you want to delete this address?</Typography>
+      </CommonDialog>
 
       <CommonDialog
         open={open}

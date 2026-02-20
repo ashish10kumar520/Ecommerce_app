@@ -2,7 +2,7 @@ import ProfileForm from "./forms/ProfileForm";
 import AdressForm from "./forms/AdressForm";
 import MyOrders from "./forms/MyOrders";
 import WishList from "./forms/WishList";
-import SavedCards from "./forms/SavedCards";
+import Notifications from "./forms/Notifications";
 import SavedUpi from "./forms/SavedUpi";
 
 export const profileConfig = [
@@ -40,9 +40,9 @@ export const profileConfig = [
         component: WishList,
       },
       {
-        key: "savedcards",
-        label: "Saved Cards",
-        component: SavedCards,
+        key: "notifications",
+        label: "Stock Notifications",
+        component: Notifications,
       },
       {
         key: "savedUPI",

@@ -8,18 +8,21 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Badge,
 } from "@mui/material";
 import Person2Icon from "@mui/icons-material/Person2";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../../config/authContext.jsx";
+import { useCart } from "../../config/CartContext.jsx";
 import { useState, useEffect } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import logo from "../../assets/shopEasyLogo.png";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { login, isAuthenticated, logout, user } = useAuth();
+  const { cartCount } = useCart();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -149,8 +152,10 @@ const Header = () => {
             )}
 
             <IconButton color="inherit" component={NavLink} to="/cart">
-              <ShoppingCartIcon />
-              <Typography>Cart</Typography>
+              <Badge badgeContent={cartCount} color="secondary">
+                <ShoppingCartIcon />
+              </Badge>
+              <Typography sx={{ ml: 0.5 }}>Cart</Typography>
             </IconButton>
           </Box>
         </Toolbar>
